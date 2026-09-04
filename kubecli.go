@@ -38,8 +38,10 @@ func New(context string) (*KubeCli, error) {
 // NewWithOptions creates a new KubeCli client from Kubeconfig
 // with come configuration options.
 func NewWithOptions(context string, opts *KubeCliOpts) (*KubeCli, error) {
-	var config *rest.Config
-	var namespace string
+	var (
+		config    *rest.Config
+		namespace string
+	)
 
 	config, namespace, err := outOfClusterConfig(context)
 	if err != nil {
@@ -122,6 +124,7 @@ func outOfClusterConfig(context string) (*rest.Config, string, error) {
 
 	config := clientcmd.NewNonInteractiveDeferredLoadingClientConfig(
 		&clientcmd.ClientConfigLoadingRules{ExplicitPath: kubeconfig}, override)
+
 	clientConfig, err := config.ClientConfig()
 	if err != nil {
 		return nil, "", fmt.Errorf("could not create Kube Configuration outOfCluster, possible reasons: %w", err)
@@ -140,5 +143,6 @@ func inClusterConfig() (*rest.Config, error) {
 	if err != nil {
 		return nil, fmt.Errorf("could not create Kube Configuration inCluster, possible reasons: %w", err)
 	}
+
 	return config, nil
 }

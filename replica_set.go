@@ -22,10 +22,12 @@ func (k *KubeCli) GetReplicaSet(deployment *appsv1.Deployment) (*appsv1.ReplicaS
 	}
 
 	var mostRecentRS *appsv1.ReplicaSet
+
 	for _, replicaSet := range replicaSets.Items {
 		for _, ownerRef := range replicaSet.GetOwnerReferences() {
 			if ownerRef.Kind == "Deployment" && ownerRef.Name == deployment.Name {
 				rs := replicaSet
+
 				mostRecentRS, err = getMostRecentRS(mostRecentRS, &rs)
 				if err != nil {
 					return nil, fmt.Errorf("could not retrieve replicatset: %w", err)
@@ -33,21 +35,25 @@ func (k *KubeCli) GetReplicaSet(deployment *appsv1.Deployment) (*appsv1.ReplicaS
 			}
 		}
 	}
+
 	if mostRecentRS == nil {
 		return nil, fmt.Errorf("not found: %w", errors.NewNotFound(schema.GroupResource{
 			Group:    deployment.GroupVersionKind().Group,
 			Resource: deployment.Name,
 		}, deployment.Name))
 	}
+
 	return mostRecentRS, nil
 }
 
 func getReplicaSetRevision(replicaSet *appsv1.ReplicaSet) (int, error) {
 	revisionString := replicaSet.Annotations["deployment.kubernetes.io/revision"]
+
 	revision, err := strconv.Atoi(revisionString)
 	if err != nil {
 		return 0, fmt.Errorf("error parsing replicaset version: %w", err)
 	}
+
 	return revision, nil
 }
 
@@ -57,6 +63,7 @@ func (k *KubeCli) GetReplicaSetByName(deploymentName string) (*appsv1.ReplicaSet
 	if err != nil {
 		return nil, fmt.Errorf("could not get deployment: %w", err)
 	}
+
 	return k.GetReplicaSet(deployment)
 }
 
@@ -82,6 +89,7 @@ func getMostRecentRS(rs1, rs2 *appsv1.ReplicaSet) (*appsv1.ReplicaSet, error) {
 		if rs1Rev >= rs2Rev {
 			return rs1, nil
 		}
+
 		return rs2, nil
 	}
 }

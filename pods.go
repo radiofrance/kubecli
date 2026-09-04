@@ -15,7 +15,9 @@ func (k *KubeCli) FindPods(replicaset *appsv1.ReplicaSet) ([]corev1.Pod, error) 
 	if err != nil {
 		return nil, fmt.Errorf("could not list pods: %w", err)
 	}
+
 	var result []corev1.Pod
+
 	for _, pod := range pods.Items {
 		for _, ownerRef := range pod.GetOwnerReferences() {
 			if ownerRef.Kind == "ReplicaSet" && ownerRef.Name == replicaset.GetName() {
@@ -24,5 +26,6 @@ func (k *KubeCli) FindPods(replicaset *appsv1.ReplicaSet) ([]corev1.Pod, error) 
 			}
 		}
 	}
+
 	return result, nil
 }
