@@ -14,5 +14,6 @@ func (k *KubeCli) GetDeployment(name string) (*appsv1.Deployment, error) {
 	if err != nil {
 		return nil, fmt.Errorf("could not get Deployment: %w", err)
 	}
+
 	return deployment, nil
 }

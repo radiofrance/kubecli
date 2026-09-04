@@ -14,5 +14,6 @@ func (k *KubeCli) GetStatefulSet(name string) (*appsv1.StatefulSet, error) {
 	if err != nil {
 		return nil, fmt.Errorf("could not get StatefulSet: %w", err)
 	}
+
 	return statefulSet, nil
 }
