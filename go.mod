@@ -1,6 +1,6 @@
 module github.com/radiofrance/kubecli
 
-go 1.27.1
+go 1.27.2
 
 require (
 	k8s.io/api v0.37.0
